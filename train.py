@@ -166,7 +166,7 @@ def main():
     else torch.device('cuda') if torch.cuda.is_available()
     else torch.device('cpu')
     )
-
+    print(device)
     # datasets & loaders
     train_ds = LMDBAugDataset(args.lmdb_path, train_keys, train_labels, train_flags,
                               base_tf, aug_tf)

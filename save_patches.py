@@ -48,7 +48,7 @@ def parse_args():
         '--out_dir', type=str, default='image_patches',
         help="Output base directory for file-system backend (image_patches/normal and tumor).")
     parser.add_argument(
-        '--backend', type=str, default='fs', choices=['fs', 'lmdb', 'hdf5'],
+        '--backend', type=str, default='lmdb', choices=['fs', 'lmdb', 'hdf5'],
         help="Storage backend: 'fs' (filesystem), 'lmdb', or 'hdf5'.")
     parser.add_argument(
         '--lmdb_path', type=str, default='patches_lmdb',
