@@ -7,19 +7,30 @@ A three-stage pipeline for training a deep learning model to detect tumor region
 ## Pipeline Overview
 
 ```
-┌─────────────────────┐      ┌─────────────────────┐      ┌─────────────────────┐
-│  1. build_index.py  │ ──▶  │  2. save_patches.py │ ──▶  │     3. train.py     │
-│                     │      │                     │      │                     │
-│  Scans slides and   │      │  Extracts actual    │      │  Trains ResNet-50   │
-│  annotations,       │      │  image patches      │      │  classifier on      │
-│  identifies tissue  │      │  from coordinates   │      │  extracted patches  │
-│  regions and tumor  │      │  and stores them    │      │                     │
-│  annotations        │      │                     │      │                     │
-└─────────────────────┘      └─────────────────────┘      └─────────────────────┘
-        │                            │                            │
-        ▼                            ▼                            ▼
-   index_level_N.pkl           patches_lmdb/               best.pt (model)
-                               (or .h5 / PNGs)             slide_index_test.pkl
+┌─────────────────────┐      ┌────────────────────────┐      ┌─────────────────────┐
+│  1. build_index.py  │ ──▶  │ 1.5 build_sampled_index│ ──▶  │  2. save_patches.py │
+│                     │      │        .py             │      │                     │
+│  Scans slides and   │      │  Subsamples normal     │      │  Extracts actual    │
+│  annotations,       │      │  patches to create a   │      │  image patches and  │
+│  identifies tissue  │      │  balanced index        │      │  stores them        │
+│  regions and tumor  │      │                        │      │                     │
+│  annotations        │      │                        │      │                     │
+└─────────────────────┘      └────────────────────────┘      └─────────────────────┘
+            │                           │                           │
+            ▼                           ▼                           ▼
+   index_level_N.pkl           index_level_N_sampled.pkl       patches_lmdb/
+                                                              (or .h5 / PNGs)
+                                                                        │
+                                                                        ▼
+                                                           ┌─────────────────────┐
+                                                           │     3. train.py     │
+                                                           │  Train classifier   │
+                                                           │  & evaluate model   │
+                                                           └─────────────────────┘
+                                                                        │
+                                                                        ▼
+                                                     best.pt (model), slide_index_test.pkl
+
 ```
 
 ---
